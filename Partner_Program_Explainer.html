@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aspen Academy · The Partner Program</title>
+<style>
+  :root{
+    --teal:#157a78; --teal-deep:#0c4f4d; --teal-deepest:#083b3a;
+    --gold:#cfa14b; --gold-soft:#ecd9a6;
+    --cream:#f4f7f6; --ink:#22312f; --muted:#5f7370; --white:#fff;
+    --shadow:0 22px 55px rgba(8,59,58,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{font-family:"Georgia","Times New Roman",serif;background:var(--teal-deepest);color:var(--ink);overflow:hidden;}
+  .sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .deck{position:relative;width:100vw;height:100vh;}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;padding:5.2vh 7.5vw;background:var(--cream);opacity:0;transition:opacity .45s ease;overflow-y:auto;}
+  .slide.active{display:flex;opacity:1;animation:fade .5s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .eyebrow{font-family:-apple-system,sans-serif;text-transform:uppercase;letter-spacing:.26em;font-size:.7rem;font-weight:700;color:var(--teal);margin-bottom:1.1rem;}
+  .slide.dark .eyebrow{color:var(--gold);}
+  h1{font-size:clamp(2.2rem,5.2vw,4.2rem);line-height:1.05;color:var(--teal-deep);font-weight:700;letter-spacing:-.5px;}
+  h2{font-size:clamp(1.7rem,3.6vw,2.9rem);line-height:1.1;color:var(--teal-deep);margin-bottom:1rem;letter-spacing:-.3px;}
+  h3{font-size:1.12rem;color:var(--teal-deep);margin-bottom:.35rem;}
+  p{font-size:clamp(1rem,1.4vw,1.3rem);line-height:1.55;color:var(--ink);max-width:65ch;}
+  p.lead{font-size:clamp(1.15rem,1.85vw,1.65rem);}
+  .muted{color:var(--muted);} strong{color:var(--teal-deep);} em{font-style:italic;}
+  .slide.dark{background:var(--teal-deep);} .slide.deepest{background:var(--teal-deepest);}
+  .slide.dark h1,.slide.dark h2,.slide.dark h3{color:#fff;}
+  .slide.dark p{color:#d7e6e4;} .slide.dark strong{color:var(--gold-soft);}
+  .title-wrap{max-width:80ch;}
+  .title-wrap .mark{font-family:-apple-system,sans-serif;font-weight:700;letter-spacing:.3em;text-transform:uppercase;font-size:.78rem;color:var(--gold);margin-bottom:1.8rem;}
+  .title-wrap .sub{margin-top:1.6rem;font-size:clamp(1.05rem,1.7vw,1.45rem);color:#cfe3e1;max-width:60ch;}
+  .title-meta{margin-top:2.6rem;display:flex;gap:1.8rem;flex-wrap:wrap;font-family:-apple-system,sans-serif;font-size:.78rem;letter-spacing:.05em;color:#8fb0ad;text-transform:uppercase;}
+  .title-meta span{border-left:2px solid var(--gold);padding-left:.7rem;}
+  .stats{display:flex;gap:2.2rem;flex-wrap:wrap;margin-top:.8rem;}
+  .stat .num{font-size:clamp(2.2rem,4.4vw,3.4rem);font-weight:700;color:var(--gold);line-height:1;font-family:-apple-system,sans-serif;}
+  .stat .lbl{font-family:-apple-system,sans-serif;font-size:.78rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-top:.45rem;}
+  .slide.dark .stat .lbl{color:#8fb0ad;}
+  .flow{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:1.6rem;align-items:stretch;}
+  .step{flex:1;min-width:135px;background:var(--white);border-radius:13px;padding:1.2rem;box-shadow:var(--shadow);border-top:4px solid var(--teal);}
+  .step .n{font-family:-apple-system,sans-serif;font-weight:700;color:var(--teal);font-size:.74rem;letter-spacing:.1em;}
+  .step h3{font-size:.98rem;margin:.35rem 0 .3rem;} .step p{font-size:.88rem;color:var(--muted);font-family:-apple-system,sans-serif;line-height:1.4;}
+  .arrow{align-self:center;color:var(--gold);font-size:1.5rem;}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;margin-top:.5rem;}
+  .card{background:var(--white);border-radius:15px;padding:1.8rem;box-shadow:var(--shadow);}
+  .card.bad{border-left:5px solid #c07a5e;} .card.good{border-left:5px solid var(--teal);}
+  .card h3{font-family:-apple-system,sans-serif;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem;}
+  .card p{font-size:1.02rem;} .card .big{font-size:1.35rem;color:var(--teal-deep);font-weight:700;display:block;margin-bottom:.5rem;font-family:-apple-system,sans-serif;}
+  .gapgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin:1.5rem 0;}
+  .gapcell{background:var(--white);border-radius:13px;padding:1.2rem 1rem;text-align:center;box-shadow:var(--shadow);}
+  .gapcell .g{font-size:2.7rem;font-weight:700;color:var(--gold);font-family:-apple-system,sans-serif;line-height:1;}
+  .gapcell .t{font-family:-apple-system,sans-serif;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-top:.45rem;}
+  .litmus{background:var(--white);border-radius:16px;padding:2rem 2.2rem;box-shadow:var(--shadow);border:2px solid var(--teal);max-width:72ch;margin-top:.5rem;}
+  .litmus .q{font-size:clamp(1.25rem,2.4vw,1.9rem);color:var(--teal-deep);font-style:italic;line-height:1.3;}
+  .roles{display:flex;gap:1.1rem;flex-wrap:wrap;margin-top:1.3rem;}
+  .role{flex:1;min-width:165px;background:rgba(255,255,255,.07);border:1px solid rgba(236,217,166,.3);border-radius:13px;padding:1.1rem;}
+  .role .name{font-family:-apple-system,sans-serif;font-weight:700;color:var(--gold-soft);font-size:.96rem;}
+  .role p{font-size:.88rem;font-family:-apple-system,sans-serif;color:#d7e6e4;margin-top:.4rem;line-height:1.4;}
+  .anchor-price{font-family:-apple-system,sans-serif;font-weight:700;color:var(--gold);font-size:clamp(1.9rem,3.8vw,2.8rem);}
+  .custom{display:flex;flex-direction:column;gap:.5rem;margin:1rem 0;}
+  .custom .row{font-family:-apple-system,sans-serif;font-size:.98rem;color:#d7e6e4;}
+  .custom .row b{color:var(--gold-soft);}
+  /* balance */
+  .balance{display:grid;grid-template-columns:.75fr 1.25fr;gap:1.6rem;margin-top:1.2rem;align-items:start;}
+  .give-box{background:rgba(255,255,255,.06);border:1px dashed rgba(236,217,166,.5);border-radius:15px;padding:1.4rem;}
+  .lbl{font-family:-apple-system,sans-serif;text-transform:uppercase;letter-spacing:.12em;font-size:.7rem;font-weight:700;margin-bottom:.9rem;}
+  .give-box .lbl{color:#8fb0ad;} .get-box .lbl{color:var(--gold);}
+  .give-item{font-family:-apple-system,sans-serif;font-size:1.02rem;color:#fff;background:rgba(255,255,255,.08);border-radius:9px;padding:.9rem;}
+  .get-box{background:rgba(207,161,75,.1);border:1px solid rgba(207,161,75,.4);border-radius:15px;padding:1.4rem;}
+  .get-list{display:flex;flex-wrap:wrap;gap:.45rem;}
+  .get-list span{font-family:-apple-system,sans-serif;font-size:.8rem;color:var(--gold-soft);background:rgba(207,161,75,.14);border:1px solid rgba(207,161,75,.32);border-radius:30px;padding:.38rem .75rem;}
+  /* overwhelm */
+  .ostack{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-top:1rem;}
+  .ocard{background:var(--white);border-radius:12px;padding:1rem 1.1rem;box-shadow:var(--shadow);border-top:3px solid var(--teal);}
+  .ocard.hl{border-top-color:var(--gold);}
+  .ocard h3{font-family:-apple-system,sans-serif;font-size:.92rem;margin-bottom:.5rem;}
+  .ocard ul{list-style:none;} .ocard li{font-family:-apple-system,sans-serif;font-size:.78rem;color:var(--ink);line-height:1.32;padding-left:.85rem;position:relative;margin-bottom:.28rem;}
+  .ocard li:before{content:"·";position:absolute;left:0;color:var(--teal);font-weight:700;}
+  /* ladder */
+  .ladder{display:flex;gap:1rem;align-items:flex-end;margin-top:1.3rem;}
+  .tier{flex:1;background:var(--white);border-radius:13px;padding:1.2rem;box-shadow:var(--shadow);border-top:5px solid var(--teal);}
+  .tier .tname{font-family:-apple-system,sans-serif;font-weight:700;color:var(--teal-deep);font-size:1.02rem;}
+  .tier .bar{font-family:-apple-system,sans-serif;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin:.25rem 0 .15rem;}
+  .tier .unlock{font-family:-apple-system,sans-serif;font-size:.72rem;color:var(--muted);margin-bottom:.7rem;}
+  .tier ul{list-style:none;} .tier li{font-family:-apple-system,sans-serif;font-size:.82rem;color:var(--ink);padding-left:1rem;position:relative;margin-bottom:.38rem;line-height:1.3;}
+  .tier li:before{content:"+";position:absolute;left:0;color:var(--gold);font-weight:700;}
+  .t2{padding-bottom:2rem;} .t3{padding-bottom:3.4rem;border-top-color:var(--gold);}
+  .nav{position:fixed;bottom:22px;right:26px;display:flex;gap:10px;z-index:50;}
+  .nav button{font-family:-apple-system,sans-serif;cursor:pointer;border:none;width:44px;height:44px;border-radius:50%;background:var(--teal);color:#fff;font-size:1.1rem;box-shadow:var(--shadow);transition:transform .15s,background .15s;}
+  .nav button:hover{transform:translateY(-2px);background:var(--gold);color:var(--teal-deepest);}
+  .counter{position:fixed;bottom:30px;left:26px;font-family:-apple-system,sans-serif;font-size:.8rem;letter-spacing:.1em;color:rgba(95,115,112,.8);z-index:50;}
+  .progress{position:fixed;top:0;left:0;height:4px;background:var(--gold);z-index:60;transition:width .4s ease;width:0;}
+  .dots{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:50;}
+  .dot{width:8px;height:8px;border-radius:50%;background:rgba(120,140,138,.4);cursor:pointer;transition:background .2s,transform .2s;}
+  .dot.on{background:var(--gold);transform:scale(1.35);}
+  .hint{position:fixed;bottom:78px;right:26px;font-family:-apple-system,sans-serif;font-size:.72rem;color:rgba(95,115,112,.65);z-index:50;}
+  @media(max-width:860px){.cols,.balance{grid-template-columns:1fr;}.gapgrid,.ostack{grid-template-columns:repeat(2,1fr);}.ladder{flex-direction:column;align-items:stretch;}.t2,.t3{padding-bottom:1.2rem;}.arrow{display:none;}.slide{padding:7vh 7vw;}}
+</style>
+</head>
+<body>
+<div class="progress" id="progressBar"></div>
+<div class="deck" id="deck">
+
+  <section class="slide dark deepest active">
+    <div class="title-wrap">
+      <div class="mark">Aspen Academy · Enrollment Marketing</div>
+      <h1>The Partner Program</h1>
+      <p class="sub sans">How we fill open seats by borrowing the trust of businesses our families already love — and why those businesses say yes.</p>
+      <div class="title-meta sans"><span>A plain-English walkthrough</span><span>For leadership &amp; admissions</span><span>June 2026</span></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow">Start with the real problem</div>
+    <h2>We have wonderful seats sitting empty.</h2>
+    <p class="lead">Meaningful openings across four grades. Every empty seat is a family we haven't reached — and tuition we don't collect.</p>
+    <div class="gapgrid">
+      <div class="gapcell"><div class="g">18</div><div class="t">PreK</div></div>
+      <div class="gapcell"><div class="g">13</div><div class="t">Kindergarten</div></div>
+      <div class="gapcell"><div class="g">22</div><div class="t">6th Grade</div></div>
+      <div class="gapcell"><div class="g">19</div><div class="t">7th Grade</div></div>
+    </div>
+    <p class="muted sans" style="font-size:.95rem;">Families who tour us enroll. The real question: <strong>how do we get the right families through the door?</strong></p>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow">Why it's hard the usual way</div>
+    <h2>A stranger seeing an ad is a long way from choosing a school.</h2>
+    <div class="cols">
+      <div class="card bad"><h3>The cold way</h3><span class="big">"Here's an ad."</span><p>We pay to reach people who've never heard of us. Most scroll past; the few who click don't know us and rarely book. Expensive, and slow.</p></div>
+      <div class="card good"><h3>The warm way</h3><span class="big">"My studio loves this school."</span><p>A business the family already trusts invites them to something valuable — and Aspen is right there. We arrive <strong>pre-introduced and pre-trusted.</strong></p></div>
+    </div>
+  </section>
+
+  <section class="slide dark">
+    <div class="eyebrow">The whole idea, in one phrase</div>
+    <h2>Borrowed trust.</h2>
+    <p class="lead">A local business whose customers are <em>already</em> our ideal families has spent years earning their trust. <strong>We lean on that trust</strong> — they vouch for us to people who already believe in them.</p>
+    <p>And it runs <strong>both ways:</strong> when we promote <em>them</em> to our families, we lend them <em>our</em> trust in return. Two trusted brands, each opening their circle to the other.</p>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow">How one event flows</div>
+    <h2>Four moving parts. One warm room.</h2>
+    <div class="flow">
+      <div class="step"><div class="n sans">01</div><h3>Pick a partner</h3><p>Families match ours; they'll promote to their people.</p></div>
+      <div class="arrow">&rarr;</div>
+      <div class="step"><div class="n sans">02</div><h3>Give real value</h3><p>An expert talk their families actually want.</p></div>
+      <div class="arrow">&rarr;</div>
+      <div class="step"><div class="n sans">03</div><h3>They promote it</h3><p>The partner emails &amp; posts it to <strong>their</strong> audience.</p></div>
+      <div class="arrow">&rarr;</div>
+      <div class="step"><div class="n sans">04</div><h3>Families meet Aspen</h3><p>They show up, experience us, we invite them to tour.</p></div>
+    </div>
+  </section>
+
+  <section class="slide dark deepest">
+    <div class="eyebrow">Let's address the obvious question</div>
+    <h2>"Why would a business ever do this?"</h2>
+    <p class="lead">This is where everyone gets stuck. It <em>sounds</em> like we're asking a busy owner for a favor — to go promote a school to their own customers.</p>
+    <p>If that were the deal, of course they'd say no.<br><strong>But that's not the deal.</strong></p>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow">The reframe that changes everything</div>
+    <h2>We're not asking a favor. We're filling their house.</h2>
+    <p class="lead">We host on <strong>their</strong> turf and put our promotion — including <strong>paid ads</strong> at the right tier — behind driving families to <strong>their</strong> door.</p>
+    <p>And it's not just <em>a</em> school doing it — it's <strong>Aspen Academy: home of the nation's first integrated PK–8 Leadership, Finance &amp; Entrepreneurship program, the premier entrepreneurial school in North America.</strong> They align their brand with that, and watch us spend real dollars to bring families to their location.</p>
+    <p class="muted sans" style="font-size:.96rem;margin-top:.8rem;">We both want the exact same thing: a packed room at their place.</p>
+  </section>
+
+  <section class="slide dark">
+    <div class="eyebrow">And the event itself is the value</div>
+    <h2>A premium, custom-built workshop — free.</h2>
+    <p>It's not a generic talk. We <strong>design the presentation around the host's world:</strong></p>
+    <div class="custom">
+      <div class="row"><b>Kids' gym</b> &rarr; an expert on physical movement &amp; brain development in children.</div>
+      <div class="row"><b>Dance studio</b> &rarr; confidence, focus, and the discipline-to-achievement link.</div>
+      <div class="row"><b>Pediatric dentist</b> &rarr; raising resilient, responsible kids (Love &amp; Logic).</div>
+    </div>
+    <div class="cols" style="margin-top:.4rem;">
+      <div><div class="anchor-price">$90–$200</div><p class="sans" style="font-size:.95rem;color:#8fb0ad;margin-top:.3rem;">what comparable expert parenting programs cost (Love &amp; Logic's official course is $119/person).</p></div>
+      <div><p><strong>Their families</strong> get real value, free — the partner looks generous and on-brand. <strong>The partner</strong> fills a room far faster with "free $119 workshop." <strong>Aspen</strong> meets ideal families before enrollment ever comes up.</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow">Look at everything a partner gets</div>
+    <h2>The value stack.</h2>
+    <div class="ostack">
+      <div class="ocard hl"><h3>🎤 Free custom event</h3><ul><li>Expert workshop built around their business ($90–$200 value)</li><li>Speaker, content &amp; logistics run by Aspen</li></ul></div>
+      <div class="ocard"><h3>📣 We market them everywhere</h3><ul><li>Family newsletter feature</li><li>Calendar listing across all platforms (site, Facebook Events…)</li><li>Social features + cross-tagging</li><li>AMP'd screen shout-outs</li><li>Paid ad spend to their location</li><li>Partner page + SEO backlink</li><li>Community board at school</li></ul></div>
+      <div class="ocard"><h3>🏅 Status &amp; awards</h3><ul><li>"Partner of Aspen Academy" web badge</li><li>Social graphics &amp; frames</li><li>Award graphic for their site</li><li>Certificate → plaque (top tier)</li><li>Featured profile / interview</li><li>Category exclusivity</li></ul></div>
+      <div class="ocard"><h3>👨‍👩‍👧 Perks for their families</h3><ul><li>App-fee waivers</li><li>Priority admission + tours</li><li>Co-branded summer / per-grade kits</li><li>Co-branded T-shirts &amp; swag</li></ul></div>
+      <div class="ocard hl"><h3>🎓 Classroom &amp; campus</h3><ul><li>LiFE classroom business profile</li><li>Student-built marketing project (campaign / video / logo)</li><li>Shark Tank guest-judge spot</li><li>Bears' Student Enterprises tie-in</li><li>Use of theater, STEM lab, fields</li><li>Published case study</li></ul></div>
+      <div class="ocard"><h3>✦ The point</h3><ul><li>One small promote from them…</li><li>…this entire stack in return — <b>including us promoting them.</b></li></ul></div>
+    </div>
+  </section>
+
+  <section class="slide dark deepest">
+    <div class="eyebrow">And here's the deal, side by side</div>
+    <h2>It's deliberately lopsided.</h2>
+    <div class="balance">
+      <div class="give-box"><div class="lbl sans">They give</div><div class="give-item">Promote one event to their list &amp; socials.</div></div>
+      <div class="get-box"><div class="lbl sans">They get</div>
+        <div class="get-list sans">
+          <span>Free $90–$200 workshop</span><span>We promote them</span><span>Paid ads to their door</span><span>Web badges &amp; awards</span><span>Social features</span><span>Newsletter + calendar</span><span>AMP'd screens</span><span>App-fee waivers</span><span>Priority tours</span><span>Co-branded kits</span><span>Classroom spotlight</span><span>Shark Tank judge</span><span>Campus use</span>
+        </div>
+      </div>
+    </div>
+    <p class="sans" style="font-size:.95rem;margin-top:1.1rem;color:#8fb0ad;">One small promote. A mountain in return — including us promoting them. That's why they say yes.</p>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow">And they earn their way up</div>
+    <h2>Three tiers. The best perks are earned.</h2>
+    <div class="ladder">
+      <div class="tier"><div class="tname sans">Community</div><div class="bar sans">The on-ramp</div><div class="unlock sans">Say yes + promote one event</div><ul><li>Free custom event</li><li>Partner-page listing</li><li>Calendar across all platforms</li><li>Newsletter + social</li><li>Web badge</li></ul></div>
+      <div class="tier t2"><div class="tname sans">Preferred</div><div class="bar sans">Proven &amp; repeat</div><div class="unlock sans">Promoted as promised + drew families</div><ul><li>Paid ads behind their event</li><li>Category exclusivity</li><li>Featured profile + award</li><li>Co-branded kits</li></ul></div>
+      <div class="tier t3"><div class="tname sans">Founding</div><div class="bar sans">All-in alliance</div><div class="unlock sans">Sustained results + enrollments</div><ul><li>LiFE classroom project</li><li>Shark Tank judge</li><li>Host events at Aspen</li><li>Plaque + case study</li></ul></div>
+    </div>
+    <p class="muted sans" style="font-size:.9rem;margin-top:1rem;">Self-balancing: the perks that take the most from us are reserved for partners who've delivered.</p>
+  </section>
+
+  <section class="slide dark">
+    <div class="eyebrow">The thing no other school can offer</div>
+    <h2>Our kids fall in love with their business.</h2>
+    <p class="lead">At the top tier, a partner joins the <strong>LiFE program</strong>: our students study their real business, build them a marketing campaign or video, and invite the owner in as a <strong>Shark Tank guest judge.</strong></p>
+    <p>They walk away with real student-made work, a starring role on campus, and a story they'll tell forever — and every one of those families now knows their brand.</p>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow">Connect it back to those empty seats</div>
+    <h2>Every partner is aimed at a specific gap.</h2>
+    <p>This isn't "general awareness." Each partner is chosen to reach the families in a grade we need to fill.</p>
+    <div class="cols" style="margin-top:1.3rem;">
+      <div class="card good"><h3>PreK · Kinder — 31 seats</h3><p>The Little Gym · Kickin' It · My Gym · Goldfish Swim School · a Cherry Hills family photographer — full of families with 2–5 year olds.</p></div>
+      <div class="card good"><h3>6th · 7th — 41 seats</h3><p>Dance studios (girls 10–13) · pediatric orthodontists (patients 10–14) · STEM programs · Spero Education — exactly our middle-grade families.</p></div>
+    </div>
+    <p class="muted sans" style="font-size:.9rem;margin-top:1rem;">We've already scored a "Dream 20" list of real local partners, mapped to these gaps.</p>
+  </section>
+
+  <section class="slide dark deepest">
+    <div class="eyebrow">The part that matters for the team</div>
+    <h2>The hard parts are already built.</h2>
+    <p>Nobody invents anything. The "Partner Program in a Box" has turnkey templates for every step — outreach, run-of-show, landing page, emails, tracker. <strong>It does ~90% of the work.</strong></p>
+    <div class="roles">
+      <div class="role"><div class="name sans">Diana — Quarterback</div><p>Picks the gap &amp; partner, makes the ask, runs the event, owns the numbers.</p></div>
+      <div class="role"><div class="name sans">Theresa — Marketing</div><p>Landing page, promo, emails, the partner badge &amp; cross-promo kit.</p></div>
+      <div class="role"><div class="name sans">Penny — Community</div><p>Surfaces relationships and makes the warm introductions.</p></div>
+    </div>
+    <p class="sans" style="font-size:.94rem;margin-top:1rem;color:#8fb0ad;">The team's 10%: the relationship, the ask, and showing up.</p>
+  </section>
+
+  <section class="slide">
+    <div class="eyebrow">This isn't theoretical</div>
+    <h2>It's already running.</h2>
+    <div class="stats">
+      <div class="stat"><div class="num">5+</div><div class="lbl">Active partners</div></div>
+      <div class="stat"><div class="num">3</div><div class="lbl">Events this summer</div></div>
+      <div class="stat"><div class="num">20</div><div class="lbl">Prospects scored</div></div>
+    </div>
+    <p style="margin-top:1.5rem;">Live now: <strong>First Steps: Love &amp; Logic</strong> with The Little Gym (Jun 16) and Kickin' It (Jun 23), plus <strong>Little Steps, Big Feelings</strong> (Jul 29). The Dream 20 is built. The box is ready.</p>
+    <div class="litmus" style="border-color:var(--teal-deep);margin-top:1.5rem;">
+      <h3 class="sans" style="text-transform:uppercase;letter-spacing:.1em;font-size:.82rem;color:var(--muted);">The ask</h3>
+      <p class="sans" style="font-size:1.1rem;margin-top:.45rem;">Back the program, protect the team's time to run it, fund the partner perks — and commit to <strong>one partner event per month</strong> against our biggest gaps.</p>
+    </div>
+  </section>
+
+</div>
+
+<div class="counter sans" id="counter">01 / 15</div>
+<div class="dots" id="dots"></div>
+<div class="hint sans">&larr; &rarr; or space to navigate</div>
+<div class="nav"><button id="prev" aria-label="Previous slide">&lsaquo;</button><button id="next" aria-label="Next slide">&rsaquo;</button></div>
+
+<script>
+  var slides=Array.from(document.querySelectorAll('.slide'));
+  var total=slides.length, i=0;
+  var counter=document.getElementById('counter'), bar=document.getElementById('progressBar'), dotsWrap=document.getElementById('dots');
+  slides.forEach(function(_,idx){var d=document.createElement('div');d.className='dot'+(idx===0?' on':'');d.addEventListener('click',function(){go(idx);});dotsWrap.appendChild(d);});
+  var dots=Array.from(document.querySelectorAll('.dot'));
+  function go(n){i=Math.max(0,Math.min(total-1,n));slides.forEach(function(s,idx){s.classList.toggle('active',idx===i);});dots.forEach(function(d,idx){d.classList.toggle('on',idx===i);});counter.textContent=String(i+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');bar.style.width=((i+1)/total*100)+'%';}
+  function next(){go(i+1);} function prev(){go(i-1);}
+  document.getElementById('next').addEventListener('click',next);
+  document.getElementById('prev').addEventListener('click',prev);
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();next();}if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev();}if(e.key==='Home')go(0);if(e.key==='End')go(total-1);});
+  var x0=null;
+  document.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;},{passive:true});
+  document.addEventListener('touchend',function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>50){dx<0?next():prev();}x0=null;},{passive:true});
+  go(0);
+</script>
+</body>
+</html>
